@@ -1,0 +1,17 @@
+[package]
+name = "zk-hash-converter-cli"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies.zk-hash-converter-core]
+workspace = true
+
+[dependencies.zk-hash-converter-methods]
+workspace = true
+
+[dependencies]
+anyhow = { workspace = true }
+clap = { version = "4.0", features = ["derive"] }
+risc0-zkvm = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
