@@ -18,7 +18,7 @@ fn main() -> Result<()> {
 fn prove(args: cli::Prove) -> Result<()> {
     let data = match (args.message, args.file) {
         (Some(message), None) => message.as_bytes().to_owned(),
-        (None, Some(file)) => fs::read(&file)?,
+        (None, Some(file)) => fs::read(file)?,
         (Some(_), Some(_)) => {
             bail!("Provide only a message (--message) or a file to hash (--file). Not both.")
         }

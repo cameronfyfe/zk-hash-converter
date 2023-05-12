@@ -67,7 +67,7 @@ fn hash_data_from_receipt(receipt: &SessionReceipt) -> Result<HashResults> {
 fn bytes_to_hex_string(bytes: &[u8]) -> String {
     bytes
         .iter()
-        .map(|b| format!("{:02x}", b))
+        .map(|b| format!("{b:02x}"))
         .collect::<Vec<String>>()
         .join("")
 }
