@@ -22,7 +22,7 @@ readme-check: _tmp
     present README.md > tmp/README.md
     diff README.md tmp/README.md
 
-ci: fmt-check build lint
+ci: fmt-check build lint readme-check
 
 run-cli +ARGS='':
     target/release/zk-hash-converter-cli {{ARGS}}

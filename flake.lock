@@ -52,6 +52,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-present": {
+      "locked": {
+        "lastModified": 1683860073,
+        "narHash": "sha256-8ltCWTq/pQ6KFZExh4vI3j5gPs6+Pc4zAPm7NzjFZJ0=",
+        "owner": "cameronfyfe",
+        "repo": "nixpkgs",
+        "rev": "343ce11c422c7b4c94c657fef2f8036a539e057c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "cameronfyfe",
+        "ref": "add-present-cli",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-risc0": {
       "locked": {
         "lastModified": 1683566886,
@@ -72,6 +88,7 @@
       "inputs": {
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs",
+        "nixpkgs-present": "nixpkgs-present",
         "nixpkgs-risc0": "nixpkgs-risc0",
         "rust-overlay": "rust-overlay"
       }

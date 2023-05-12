@@ -3,6 +3,7 @@
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-risc0.url = "github:cameronfyfe/nixpkgs/add-cargo-risc0";
+    nixpkgs-present.url = "github:cameronfyfe/nixpkgs/add-present-cli";
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -22,6 +23,10 @@
           inherit system;
         }).cargo-risczero;
 
+        present-cli = (import inputs.nixpkgs-present {
+          inherit system;
+        }).present-cli;
+
         rust-config = {
           extensions = [ "rust-src" ];
           targets = [ "wasm32-unknown-unknown" ];
@@ -33,6 +38,7 @@
 
         shellPkgs = [
           cargo-risczero
+          present-cli
           rust
         ] ++ (with pkgs; [
           bc
