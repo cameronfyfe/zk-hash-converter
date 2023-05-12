@@ -12,6 +12,8 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
       - name: Build Nix Shell
-        run: nix develop -L -c true
+        run: |
+          nix develop -L -c true
+          nix develop .#rust-nightly -L -c true
       - name: Build
         run: nix develop -c ets -sc just ci
