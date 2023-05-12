@@ -25,7 +25,7 @@ pub fn prove_hashes(data: Vec<u8>) -> Result<ProveHashesResponse> {
     let guest_env = ExecutorEnv::builder()
         // default session limit is 64*1000*1000 cycles
         // default was exceed when running with >100kb input
-        .session_limit(1024* 1024 * 1024 * 1024)
+        .session_limit(1024 * 1024 * 1024 * 1024)
         .add_input(&data)
         .build();
 
