@@ -28,6 +28,14 @@ Verify a proof
 
     just run-cli verify --proof ./proof.json
 
+Example `journal.json`:
+```json
+{
+  "blake3": "6437b3ac38465133ffb63b75273a8db548c558465d79db03fd359c6cd5bd9d85",
+  "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+}
+```
+
 ## Usage
 
 ```present just run-cli help
