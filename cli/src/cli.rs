@@ -30,18 +30,15 @@ pub struct Prove {
     /// Journal destination
     #[clap(short, long, value_parser)]
     pub journal: PathBuf,
-    /// Receipt destination
+    /// Proof destination
     #[clap(short, long, value_hint = ValueHint::AnyPath, value_parser)]
-    pub receipt: PathBuf,
+    pub proof: PathBuf,
 }
 
 /// Verify a hash correlation
 #[derive(Parser, Debug)]
 pub struct Verify {
-    /// Journal file to verify
+    /// Proof file to verify
     #[clap(short, long, value_parser)]
-    pub journal: PathBuf,
-    /// Receipt for compute proof to verify journal
-    #[clap(short, long, value_parser)]
-    pub receipt: PathBuf,
+    pub proof: PathBuf,
 }

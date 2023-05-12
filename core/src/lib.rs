@@ -1,7 +1,8 @@
 use anyhow::Result;
 use risc0_zkvm::{Executor, ExecutorEnv, SessionReceipt};
+use serde::{Deserialize, Serialize};
 use serde_json::json;
-use zk_hash_converter_methods::GUEST_ELF;
+use zk_hash_converter_methods::{GUEST_ELF, GUEST_ID};
 
 // include this file instead of handling as a crate because `core` library
 // and risc5 based `guest` binary should use different `serde` configs
@@ -9,7 +10,13 @@ include!("../../interface/interface.rs");
 
 pub struct ProveHashesResponse {
     pub journal: String,
-    pub receipt: String,
+    pub proof: String,
+}
+
+#[derive(Clone, Deserialize, Serialize)]
+pub struct Proof {
+    pub image_id: [u32; 8],
+    pub receipt: SessionReceipt,
 }
 
 pub fn prove_hashes(data: Vec<u8>) -> Result<ProveHashesResponse> {
@@ -32,10 +39,22 @@ pub fn prove_hashes(data: Vec<u8>) -> Result<ProveHashesResponse> {
             "sha256": bytes_to_hex_string(&sha256),
             "blake3": bytes_to_hex_string(&blake3),
         }))?,
-        receipt: serde_json::to_string(&receipt)?,
+        proof: serde_json::to_string(&Proof {
+            image_id: GUEST_ID,
+            receipt,
+        })?,
     };
 
     Ok(response)
+}
+
+pub fn verify_proof(proof: &Proof) -> Result<bool> {
+    let Proof { image_id, receipt } = proof;
+
+    let result = receipt.verify(*image_id);
+    let verified = result.is_ok();
+
+    Ok(verified)
 }
 
 fn hash_data_from_receipt(receipt: &SessionReceipt) -> Result<HashResults> {

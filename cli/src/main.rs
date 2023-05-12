@@ -2,7 +2,7 @@ use anyhow::{bail, Result};
 use clap::Parser;
 use std::fs;
 use zk_hash_converter_cli::cli;
-use zk_hash_converter_core::{prove_hashes, ProveHashesResponse};
+use zk_hash_converter_core::{prove_hashes, verify_proof, Proof, ProveHashesResponse};
 
 fn main() -> Result<()> {
     let args = cli::Args::parse();
@@ -25,16 +25,25 @@ fn prove(args: cli::Prove) -> Result<()> {
         (None, None) => bail!("Provide a message (--message) or file to hash (--file)."),
     };
 
-    let ProveHashesResponse { journal, receipt } = prove_hashes(data)?;
+    let ProveHashesResponse { journal, proof } = prove_hashes(data)?;
 
     fs::write(args.journal, journal)?;
-    fs::write(args.receipt, receipt)?;
+    fs::write(args.proof, proof)?;
 
     Ok(())
 }
 
 fn verify(args: cli::Verify) -> Result<()> {
-    let _ = args;
+    let proof = fs::read_to_string(args.proof)?;
+    let proof = serde_json::from_str::<Proof>(&proof)?;
+
+    let verified = verify_proof(&proof)?;
+
+    if verified {
+        println!("Proof verified!");
+    } else {
+        println!("Proof failed to verify.")
+    }
 
     Ok(())
 }
