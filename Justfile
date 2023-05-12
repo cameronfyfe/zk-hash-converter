@@ -4,6 +4,9 @@ _:
 build:
     cargo build --release
 
+lint:
+    cargo clippy
+
 fmt-check:
     @just _rust-nightly cargo fmt --check
 
