@@ -40,6 +40,7 @@
         ] ++ (with pkgs; [
           bc
           cargo-audit
+          ets
           just
           nixpkgs-fmt
           openssl
