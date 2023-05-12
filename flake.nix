@@ -29,9 +29,6 @@
 
         rust = (pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain).override rust-config;
 
-        # rust-nightly used for advanced options in rustfmt
-        rust-nightly = pkgs.rust-bin.nightly.latest.default.override rust-config;
-
         eqty.pkgs = inputs.eqty-nix.packages.${system};
 
         shellPkgs = [
@@ -53,9 +50,6 @@
         devShells = {
           default = pkgs.mkShell {
             nativeBuildInputs = shellPkgs;
-          };
-          rust-nightly = pkgs.mkShell {
-            nativeBuildInputs = [ rust-nightly ];
           };
         };
 
