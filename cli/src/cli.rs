@@ -1,5 +1,6 @@
-use clap::{Parser, ValueHint};
 use std::path::PathBuf;
+
+use clap::{Parser, ValueHint};
 
 /// CLI Args
 #[derive(Parser, Debug)]

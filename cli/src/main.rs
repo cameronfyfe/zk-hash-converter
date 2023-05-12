@@ -1,6 +1,7 @@
+use std::fs;
+
 use anyhow::{bail, Result};
 use clap::Parser;
-use std::fs;
 use zk_hash_converter_cli::cli;
 use zk_hash_converter_core::{prove_hashes, verify_proof, Proof, ProveHashesResponse};
 
