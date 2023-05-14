@@ -22,7 +22,7 @@ pub struct Proof {
 pub fn prove_hashes(data: Vec<u8>) -> Result<ProveHashesResponse> {
     let data = DataToHash { data };
     let data = risc0_zkvm::serde::to_vec(&data)?;
-    
+
     let guest_env = ExecutorEnv::builder()
         // default session limit is 64*1000*1000 cycles
         // default was exceed when running with >100kb input
