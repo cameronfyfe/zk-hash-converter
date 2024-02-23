@@ -1,5 +1,5 @@
 use anyhow::Result;
-use risc0_zkvm::{Executor, ExecutorEnv, SessionReceipt};
+use risc0_zkvm::{ExecutorEnv, Receipt, default_prover};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use zk_hash_converter_methods::{GUEST_ELF, GUEST_ID};
@@ -16,7 +16,7 @@ pub struct ProveHashesResponse {
 #[derive(Clone, Deserialize, Serialize)]
 pub struct Proof {
     pub image_id: [u32; 8],
-    pub receipt: SessionReceipt,
+    pub receipt: Receipt,
 }
 
 pub fn prove_hashes(data: Vec<u8>) -> Result<ProveHashesResponse> {
@@ -24,14 +24,11 @@ pub fn prove_hashes(data: Vec<u8>) -> Result<ProveHashesResponse> {
     let data = risc0_zkvm::serde::to_vec(&data)?;
 
     let guest_env = ExecutorEnv::builder()
-        // default session limit is 64*1000*1000 cycles
-        // default was exceed when running with >100kb input
-        .session_limit(1024 * 1024 * 1024 * 1024)
-        .add_input(&data)
-        .build();
+        .session_limit(None)
+        .write(&data)?
+        .build()?;
 
-    let session = Executor::from_elf(guest_env, GUEST_ELF)?.run()?;
-    let receipt = session.prove()?;
+    let receipt = default_prover().prove(guest_env, GUEST_ELF)?;
 
     let HashResults { sha256, blake3 } = hash_data_from_receipt(&receipt)?;
 
@@ -58,8 +55,8 @@ pub fn verify_proof(proof: &Proof) -> Result<bool> {
     Ok(verified)
 }
 
-fn hash_data_from_receipt(receipt: &SessionReceipt) -> Result<HashResults> {
-    let hash_data = risc0_zkvm::serde::from_slice(receipt.journal.as_slice())?;
+fn hash_data_from_receipt(receipt: &Receipt) -> Result<HashResults> {
+    let hash_data = receipt.journal.decode()?;
 
     Ok(hash_data)
 }
