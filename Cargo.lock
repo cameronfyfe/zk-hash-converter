@@ -2251,11 +2251,11 @@ dependencies = [
 name = "zk-hash-converter-verifier"
 version = "0.1.0"
 dependencies = [
+ "hex",
  "risc0-zkvm",
  "serde",
  "serde-wasm-bindgen",
  "serde_json",
  "wasm-bindgen",
  "wasm-bindgen-futures",
- "zk-hash-converter-core",
 ]
