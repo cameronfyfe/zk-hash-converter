@@ -1,0 +1,17 @@
+{
+    "renderer": "default",
+    "schema": [
+        {
+            "type": "labeled-field",
+            "label": "SHA-256 Hash",
+            "display": "uint8array-hex",
+            "field": "sha256"
+        },
+        {
+            "type": "labeled-field",
+            "label": "Blake3 Hash",
+            "display": "uint8array-hex",
+            "field": "blake3"
+        }
+    ]  
+}

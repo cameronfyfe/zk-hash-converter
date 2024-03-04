@@ -2,8 +2,10 @@
 members = [
     "cli",
     "core",
-    "methods"
+    "methods",
+    "web-verifier",
 ]
+resolver = "2"
 
 [workspace.dependencies.zk-hash-converter-core]
 path = "./core"

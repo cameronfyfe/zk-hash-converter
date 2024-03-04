@@ -1,0 +1,14 @@
+_:
+    @just --list
+
+build:
+    wasm-pack build --target web
+
+publish:
+    just clean
+    just build
+    ipfs add -r ./pkg
+    ipfs add journal-renderer.json
+
+clean:
+    rm -rf ./pkg

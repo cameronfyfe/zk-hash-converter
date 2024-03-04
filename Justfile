@@ -1,8 +1,27 @@
 _:
     @just --list
 
-build:
-    cargo build --release
+build +args='':
+    cargo build {{args}}
+
+build-cuda +args='':
+    cargo build --features cuda --target-dir target-cuda {{args}} 
+
+docker-build +args='': _tmp build-pyzero-builder 
+    docker run --rm \
+        -v `pwd`:/build \
+        -w /build \
+        --env CARGO_HOME=./tmp/.cargo-docker \
+        pyzero-builder \
+        cargo build --target-dir target-docker {{args}}
+
+docker-build-cuda +args='': _tmp build-pyzero-builder-cuda
+    docker run --rm \
+        -v `pwd`:/build \
+        -w /build \
+        --env CARGO_HOME=./tmp/.cargo-docker \
+        pyzero-builder-cuda \
+        cargo build --features cuda --target-dir target-docker-cuda {{args}}
 
 lint:
     cargo clippy
@@ -24,8 +43,11 @@ readme-check: _tmp
 
 ci: fmt-check build lint readme-check
 
-run-cli +ARGS='':
-    target/release/zk-hash-converter-cli {{ARGS}}
+build-pyzero-builder:
+    docker build -t pyzero-builder -f docker/base.dockerfile .
+
+build-pyzero-builder-cuda:
+    docker build -t pyzero-builder-cuda -f docker/cuda.dockerfile .
 
 _tmp:
     mkdir -p tmp

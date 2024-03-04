@@ -18,15 +18,15 @@ Build
 
 Generate proof for hashes of a message
 
-    just run-cli prove --message 'abc' --journal ./journal.json --proof ./proof.json
+    zk-hash-converter-cli prove --message 'abc' --journal ./journal.json --proof ./proof.json
 
 Generate proof for hashes of a file
 
-    just run-cli prove --file ./my-file --journal ./journal.json --proof ./proof.json
+    zk-hash-converter-cli prove --file ./my-file --journal ./journal.json --proof ./proof.json
 
 Verify a proof
 
-    just run-cli verify --proof ./proof.json
+    zk-hash-converter-cli verify --proof ./proof.json
 
 Example `journal.json`:
 ```json
@@ -38,7 +38,7 @@ Example `journal.json`:
 
 ## Usage
 
-```present just run-cli help
+```
 CLI Args
 
 Usage: zk-hash-converter-cli <COMMAND>
@@ -55,7 +55,7 @@ Options:
 
 ### `prove`
 
-```present just run-cli prove --help
+```
 Prove a hash correlation
 
 Usage: zk-hash-converter-cli prove [OPTIONS] --journal <JOURNAL> --proof <PROOF>
@@ -70,7 +70,7 @@ Options:
 
 ### `verify`
 
-```present just run-cli verify --help
+```
 Verify a hash correlation
 
 Usage: zk-hash-converter-cli verify --proof <PROOF>
