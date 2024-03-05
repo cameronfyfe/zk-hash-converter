@@ -36,6 +36,7 @@
           wasm-bindgen-cli
         ] ++ (with pkgs; [
           bc
+          cargo-risczero
           ets
           just
           nixpkgs-fmt

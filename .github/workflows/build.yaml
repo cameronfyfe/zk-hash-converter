@@ -7,11 +7,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Install Nix
-        uses: cameronfyfe/install-nix-action@v19
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-      - name: Build Nix Shell
-        run: nix develop -L -c true
-      - name: Build
-        run: nix develop -c ets -sc just ci
+      - uses: eqtylab-actions/install-nix-action@v19
+      - uses: eqtylab-actions/checkout@v3
+      - run: nix develop -L -c true
+      - run: nix develop -c cargo risczero install
+      - run: nix develop -c ets -sc just ci

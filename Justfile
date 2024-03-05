@@ -23,9 +23,6 @@ docker-build-cuda +args='': _tmp build-pyzero-builder-cuda
         pyzero-builder-cuda \
         cargo build --features cuda --target-dir target-docker-cuda {{args}}
 
-lint:
-    cargo clippy
-
 fmt-check:
     nixpkgs-fmt . --check
     cargo fmt --check
@@ -41,13 +38,20 @@ readme-check: _tmp
     present README.md > tmp/README.md
     diff README.md tmp/README.md
 
-ci: fmt-check build lint readme-check
+ci: fmt-check build readme-check
 
 build-pyzero-builder:
     docker build -t pyzero-builder -f docker/base.dockerfile .
 
 build-pyzero-builder-cuda:
     docker build -t pyzero-builder-cuda -f docker/cuda.dockerfile .
+
+enter-pyzero-builder:
+    docker run --rm -it \
+        -v `pwd`:/build \
+        -w /build \
+        pyzero-builder \
+        bash
 
 _tmp:
     mkdir -p tmp

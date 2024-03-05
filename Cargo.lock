@@ -2217,16 +2217,16 @@ dependencies = [
 ]
 
 [[package]]
-name = "zk-hash-converter-cli"
+name = "zk-hash-converter"
 version = "0.0.0"
 dependencies = [
  "anyhow",
  "clap",
+ "hex",
  "risc0-zkvm",
  "serde",
  "serde_json",
  "zk-hash-converter-core",
- "zk-hash-converter-methods",
 ]
 
 [[package]]
@@ -2234,21 +2234,23 @@ name = "zk-hash-converter-core"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "bincode",
+ "hex",
  "risc0-zkvm",
  "serde",
  "serde_json",
- "zk-hash-converter-methods",
+ "zk-hash-converter-core-methods",
 ]
 
 [[package]]
-name = "zk-hash-converter-methods"
+name = "zk-hash-converter-core-methods"
 version = "0.0.0"
 dependencies = [
  "risc0-build",
 ]
 
 [[package]]
-name = "zk-hash-converter-verifier"
+name = "zk-hash-converter-web-verifier"
 version = "0.1.0"
 dependencies = [
  "hex",

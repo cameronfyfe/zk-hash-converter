@@ -1,6 +1,6 @@
 # zk-hash-converter
 
-zk-hash-converter is a tool for generating and verifying zero knowledge proofs that hash 2 results from different algorithms proven to be correlated to the same data without revealing information about the data.
+zk-hash-converter is a tool for generating and verifying zero knowledge proofs proving multiple hashes to be correlated to the same data blob without revealing information about the data blob.
 
 # Getting Started
 
@@ -12,41 +12,42 @@ Build
 
     just build
 
+Build for CUDA
+
+    just build-cuda
+
 # Running CLI
 
 ## Quick Examples
 
 Generate proof for hashes of a message
 
-    zk-hash-converter-cli prove --message 'abc' --journal ./journal.json --proof ./proof.json
+    zk-hash-converter prove --message 'abc'
 
 Generate proof for hashes of a file
 
-    zk-hash-converter-cli prove --file ./my-file --journal ./journal.json --proof ./proof.json
+    zk-hash-converter prove --file my-file
 
 Verify a proof
 
-    zk-hash-converter-cli verify --proof ./proof.json
+    zk-hash-converter verify --proof proof.bin
 
-Example `journal.json`:
-```json
-{
-  "blake3": "6437b3ac38465133ffb63b75273a8db548c558465d79db03fd359c6cd5bd9d85",
-  "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
-}
-```
+Show the Guest ID of the prover
+
+    zk-hash-converter guest-id
 
 ## Usage
 
 ```
-CLI Args
+zk-hash-converter
 
-Usage: zk-hash-converter-cli <COMMAND>
+Usage: zk-hash-converter <COMMAND>
 
 Commands:
-  prove   Prove a hash correlation
-  verify  Verify a hash correlation
-  help    Print this message or the help of the given subcommand(s)
+  prove     Prove a hash correlation
+  verify    Verify a hash correlation
+  guest-id  Print the Guest ID
+  help      Print this message or the help of the given subcommand(s)
 
 Options:
   -h, --help     Print help
@@ -58,13 +59,12 @@ Options:
 ```
 Prove a hash correlation
 
-Usage: zk-hash-converter-cli prove [OPTIONS] --journal <JOURNAL> --proof <PROOF>
+Usage: zk-hash-converter prove [OPTIONS]
 
 Options:
   -m, --message <MESSAGE>  Message to hash
   -f, --file <FILE>        File to hash
-  -j, --journal <JOURNAL>  Journal destination
-  -p, --proof <PROOF>      Proof destination
+  -p, --proof <PROOF>      Proof file destination [default: proof.bin]
   -h, --help               Print help
 ```
 
@@ -73,9 +73,22 @@ Options:
 ```
 Verify a hash correlation
 
-Usage: zk-hash-converter-cli verify --proof <PROOF>
+Usage: zk-hash-converter verify <PROOF>
+
+Arguments:
+  <PROOF>  Proof file to verify
 
 Options:
-  -p, --proof <PROOF>  Proof file to verify
-  -h, --help           Print help
+  -h, --help  Print help
+```
+
+### `guest-id`
+
+```
+Print the Guest ID
+
+Usage: zk-hash-converter guest-id
+
+Options:
+  -h, --help  Print help
 ```

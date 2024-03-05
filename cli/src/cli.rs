@@ -2,10 +2,10 @@ use std::path::PathBuf;
 
 use clap::{Parser, ValueHint};
 
-/// CLI Args
+/// zk-hash-converter
 #[derive(Parser, Debug)]
 #[clap(version, about, long_about = None)]
-#[clap(name = "hash_converter")]
+#[clap(name = "zk-hash-converter")]
 pub struct Args {
     /// Subcommand.
     #[clap(subcommand)]
@@ -17,6 +17,7 @@ pub struct Args {
 pub enum Subcommand {
     Prove(Prove),
     Verify(Verify),
+    GuestId(GuestId),
 }
 
 /// Prove a hash correlation
@@ -26,13 +27,10 @@ pub struct Prove {
     #[clap(short, long, value_parser)]
     pub message: Option<String>,
     /// File to hash
-    #[clap(short, long, value_parser)]
+    #[clap(short, long, value_hint = ValueHint::FilePath, value_parser)]
     pub file: Option<PathBuf>,
-    /// Journal destination
-    #[clap(short, long, value_parser)]
-    pub journal: PathBuf,
-    /// Proof destination
-    #[clap(short, long, value_hint = ValueHint::AnyPath, value_parser)]
+    /// Proof file destination
+    #[clap(short, long, default_value = "proof.bin", value_hint = ValueHint::AnyPath, value_parser)]
     pub proof: PathBuf,
 }
 
@@ -40,6 +38,10 @@ pub struct Prove {
 #[derive(Parser, Debug)]
 pub struct Verify {
     /// Proof file to verify
-    #[clap(short, long, value_parser)]
+    #[clap(value_parser)]
     pub proof: PathBuf,
 }
+
+/// Print the Guest ID
+#[derive(Parser, Debug)]
+pub struct GuestId {}

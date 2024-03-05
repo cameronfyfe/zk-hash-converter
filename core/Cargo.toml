@@ -3,11 +3,12 @@ name = "zk-hash-converter-core"
 version = "0.1.0"
 edition = "2021"
 
-[dependencies.zk-hash-converter-methods]
-workspace = true
-
 [dependencies]
+zk-hash-converter-core-methods = { path = "./methods" }
+
 anyhow = { workspace = true }
+bincode = { workspace = true }
+hex = { workspace = true }
 risc0-zkvm = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }

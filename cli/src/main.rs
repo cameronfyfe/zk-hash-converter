@@ -2,8 +2,8 @@ use std::fs;
 
 use anyhow::{bail, Result};
 use clap::Parser;
-use zk_hash_converter_cli::cli;
-use zk_hash_converter_core::{prove_hashes, verify_proof, Proof, ProveHashesResponse};
+use zk_hash_converter::cli;
+use zk_hash_converter_core::{prove_hashes, verify_proof, ProveResponse, VerifyResponse};
 
 fn main() -> Result<()> {
     let args = cli::Args::parse();
@@ -11,6 +11,7 @@ fn main() -> Result<()> {
     match args.cmd {
         cli::Subcommand::Prove(args) => prove(args)?,
         cli::Subcommand::Verify(args) => verify(args)?,
+        cli::Subcommand::GuestId(args) => guest_id(args)?,
     };
 
     Ok(())
@@ -26,25 +27,43 @@ fn prove(args: cli::Prove) -> Result<()> {
         (None, None) => bail!("Provide a message (--message) or file to hash (--file)."),
     };
 
-    let ProveHashesResponse { journal, proof } = prove_hashes(data)?;
+    let ProveResponse {
+        hash_results,
+        receipt,
+    } = prove_hashes(data)?;
 
-    fs::write(args.journal, journal)?;
-    fs::write(args.proof, proof)?;
+    println!("Sha256: {}", hex::encode(hash_results.sha256));
+    println!("Blake3: {}", hex::encode(hash_results.blake3));
+
+    fs::write(args.proof, receipt)?;
 
     Ok(())
 }
 
 fn verify(args: cli::Verify) -> Result<()> {
-    let proof = fs::read_to_string(args.proof)?;
-    let proof = serde_json::from_str::<Proof>(&proof)?;
+    let proof = fs::read(args.proof)?;
 
-    let verified = verify_proof(&proof)?;
+    let VerifyResponse {
+        verified,
+        hash_results,
+    } = verify_proof(&proof)?;
+
+    println!("Sha256: {}", hex::encode(hash_results.sha256));
+    println!("Blake3: {}", hex::encode(hash_results.blake3));
 
     if verified {
         println!("Proof verified!");
     } else {
         println!("Proof failed to verify.")
     }
+
+    Ok(())
+}
+
+fn guest_id(args: cli::GuestId) -> Result<()> {
+    let _ = args;
+
+    println!("{}", zk_hash_converter_core::guest_id());
 
     Ok(())
 }

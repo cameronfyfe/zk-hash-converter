@@ -1,58 +1,58 @@
 use anyhow::Result;
-use risc0_zkvm::{ExecutorEnv, Receipt, default_prover};
-use serde::{Deserialize, Serialize};
-use serde_json::json;
-use zk_hash_converter_methods::{GUEST_ELF, GUEST_ID};
+use risc0_zkvm::{default_prover, ExecutorEnv, Receipt};
+use zk_hash_converter_core_methods::{GUEST_ELF, GUEST_ID};
 
 // include this file instead of handling as a crate because `core` library
-// and risc5 based `guest` binary should use different `serde` configs
-include!("../../interface/interface.rs");
+// and risc-v based `guest` binary should use different `serde` configs
+include!("../methods/interface.rs");
 
-pub struct ProveHashesResponse {
-    pub journal: String,
-    pub proof: String,
+use interface::{DataToHash, HashResults};
+
+pub struct ProveResponse {
+    pub hash_results: HashResults,
+    pub receipt: Vec<u8>,
 }
 
-#[derive(Clone, Deserialize, Serialize)]
-pub struct Proof {
-    pub image_id: [u32; 8],
-    pub receipt: Receipt,
+pub struct VerifyResponse {
+    pub verified: bool,
+    pub hash_results: HashResults,
 }
 
-pub fn prove_hashes(data: Vec<u8>) -> Result<ProveHashesResponse> {
+pub fn prove_hashes(data: Vec<u8>) -> Result<ProveResponse> {
     let data = DataToHash { data };
     let data = risc0_zkvm::serde::to_vec(&data)?;
 
-    let guest_env = ExecutorEnv::builder()
-        .session_limit(None)
-        .write(&data)?
-        .build()?;
+    let guest_env = ExecutorEnv::builder().write(&data)?.build()?;
 
     let receipt = default_prover().prove(guest_env, GUEST_ELF)?;
 
-    let HashResults { sha256, blake3 } = hash_data_from_receipt(&receipt)?;
+    let hash_results = hash_data_from_receipt(&receipt)?;
 
-    let response = ProveHashesResponse {
-        journal: serde_json::to_string_pretty(&json!({
-            "sha256": bytes_to_hex_string(&sha256),
-            "blake3": bytes_to_hex_string(&blake3),
-        }))?,
-        proof: serde_json::to_string(&Proof {
-            image_id: GUEST_ID,
-            receipt,
-        })?,
-    };
+    let receipt = bincode::serialize(&receipt)?;
 
-    Ok(response)
+    Ok(ProveResponse {
+        hash_results,
+        receipt,
+    })
 }
 
-pub fn verify_proof(proof: &Proof) -> Result<bool> {
-    let Proof { image_id, receipt } = proof;
+pub fn verify_proof(proof: &[u8]) -> Result<VerifyResponse> {
+    let receipt = bincode::deserialize::<Receipt>(proof)?;
 
-    let result = receipt.verify(*image_id);
+    let hash_results = hash_data_from_receipt(&receipt)?;
+
+    let result = receipt.verify(GUEST_ID);
+
     let verified = result.is_ok();
 
-    Ok(verified)
+    Ok(VerifyResponse {
+        verified,
+        hash_results,
+    })
+}
+
+pub fn guest_id() -> String {
+    hex::encode(vec_u8_from_u32_slice_little_endian(&GUEST_ID))
 }
 
 fn hash_data_from_receipt(receipt: &Receipt) -> Result<HashResults> {
@@ -61,11 +61,6 @@ fn hash_data_from_receipt(receipt: &Receipt) -> Result<HashResults> {
     Ok(hash_data)
 }
 
-// TODO: hex crate
-fn bytes_to_hex_string(bytes: &[u8]) -> String {
-    bytes
-        .iter()
-        .map(|b| format!("{b:02x}"))
-        .collect::<Vec<String>>()
-        .join("")
+fn vec_u8_from_u32_slice_little_endian(v: &[u32]) -> Vec<u8> {
+    v.iter().flat_map(|&x| x.to_le_bytes().to_vec()).collect()
 }

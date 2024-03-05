@@ -3,8 +3,10 @@
 use risc0_zkvm::{guest::env, sha::{Impl, Sha256}};
 
 // include this file instead of handling as a crate because `core` library
-// and risc5 based `guest` binary should use different `serde` configs
-include!("../../../interface/interface.rs");
+// and risc-v based `guest` binary should use different `serde` configs
+include!("../../interface.rs");
+
+use interface::{DataToHash, HashResults};
 
 risc0_zkvm::guest::entry!(main);
 
